@@ -1,0 +1,30 @@
+name: build
+on:
+    push:
+        tags:
+            - '[0-9]+.[0-9]+.[0-9]+'
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+
+        env:
+            NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+
+        strategy:
+            matrix:
+                node-version: [14.x]
+
+        steps:
+            - uses: actions/checkout@v2
+            - name: Use Node.js ${{ matrix.node-version }}
+              uses: actions/setup-node@v1
+              with:
+                  always-auth: true
+                  node-version: ${{ matrix.node-version }}
+            - run: npm config set always-auth=true
+            - run: npm config set //registry.npmjs.org/:_authToken=$NODE_AUTH_TOKEN
+            - run: yarn
+            - run: yarn build
+            - run: npm --no-git-tag-version version ${GITHUB_REF#refs/tags/}
+            - run: npm publish
