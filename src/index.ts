@@ -68,10 +68,10 @@ function PluginImportToCDN(options: Options): Plugin[] {
             name: 'vite-plugin-cdn-import',
             transformIndexHtml(html) {
                 return html.replace(
-                    /<\/head>/i,
-                    `${data
+                    /<\/title>/i,
+                    `</title>${data
                         .map((v) => `<script src="${v.url}"></script>`)
-                        .join('')}</head>`
+                        .join('')}`
                 )
             },
         },
