@@ -7,6 +7,7 @@ interface Module {
     name: string
     var: string
     path: string
+    css?: string | string[]
 }
 
 interface Options {
@@ -29,29 +30,45 @@ function getModuleVersion(name: string): string {
     throw new Error(`modules: ${name} package.json file does not exist`)
 }
 
+function renderUrl(url: string, data: {
+    name: string
+    version: string
+    path: string
+}) {
+    return url.replace(/\{name\}/g, data.name)
+        .replace(/\{version\}/g, data.version)
+        .replace(/\{path\}/g, data.path)
+}
+
 function PluginImportToCDN(options: Options): Plugin[] {
-    /**
-     * Only work under build
-     */
-    if (process.env.NODE_ENV !== 'production') {
-        return []
-    }
 
     const {
         modules = [],
         prodUrl = 'https://cdn.jsdelivr.net/npm/{name}@{version}/{path}',
     } = options
 
+    const isDev = process.env.NODE_ENV !== 'production'
+
     const data = modules.map((v) => {
         const version = getModuleVersion(v.name)
-        const url = prodUrl
-            .replace(/\{name\}/g, v.name)
-            .replace(/\{version\}/g, version)
-            .replace(/\{path\}/g, v.path)
+        const data = {
+            ...v,
+            version
+        }
+        const url = renderUrl(prodUrl, data)
+        let css = v.css || []
+        if (!Array.isArray(css) && css) {
+            css = [css]
+        }
+
         return {
             ...v,
             version,
             url,
+            cssList: !Array.isArray(css) ? [] : css.map(c => renderUrl(prodUrl, {
+                ...data,
+                path: c
+            }))
         }
     })
 
@@ -63,20 +80,34 @@ function PluginImportToCDN(options: Options): Plugin[] {
         externalMap[v.name] = v.var
     })
 
-    return [
+    const plugins: Plugin[] = [
         {
             name: 'vite-plugin-cdn-import',
             transformIndexHtml(html) {
+                const cssCode = data
+                    .map(v => v.cssList.map(css => `<link href="${css}" rel="stylesheet">`).join('\n'))
+                    .filter(v => v)
+                    .join('\n')
+
+                const jsCode = isDev
+                    ? ''
+                    : data
+                        .map((v) => `<script src="${v.url}"></script>`)
+                        .join('\n')
+
                 return html.replace(
                     /<\/title>/i,
-                    `</title>${data
-                        .map((v) => `<script src="${v.url}"></script>`)
-                        .join('')}`
+                    `</title>${cssCode}\n${jsCode}`
                 )
             },
         },
-        externalGlobals(externalMap),
     ]
+
+    if (!isDev) {
+        plugins.push(externalGlobals(externalMap),)
+    }
+
+    return plugins
 }
 
 export {

@@ -46,14 +46,12 @@ export default {
 }
 ```
 
-
-
 ### Options
 
 | Name    | Description                                                  | Type          | Default                                              |
 | ------- | ------------------------------------------------------------ | ------------- | ---------------------------------------------------- |
-| prodUrl | Overrides the global prodUrl, allowing you to specify the CDN location for a specific module | string        | https://cdn.jsdelivr.net/npm/{name}@{version}/{path} |
-| modules | Modules config                                               | Array<Module> | -                                                    |
+| prodUrl | Overrides the global prodUrl, allowing you to specify the CDN location for a specific module | string        | <https://cdn.jsdelivr.net/npm/{name}@{version}/{path>} |
+| modules | Modules config                                               | Array`<Module>` | -                                                    |
 
 #### Module
 
@@ -62,6 +60,7 @@ export default {
 | name | The name of the module you want to externalize               | string |
 | var  | A variable that will be assigned to the module in global scope, Rollup requires this | string |
 | path | Specify the load path on the CDN                             | string |
+| css  | You can alternatively specify multiple style sheets which will be loaded from the CDN                             | string / string[] |
 
 ### Other CDN pordUrl
 
