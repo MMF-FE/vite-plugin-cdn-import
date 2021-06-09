@@ -1,3 +1,5 @@
+[点击此处阅读中文版(Click here to read the Chinese version)](README_CH.md)
+
 ## CDN extension for the vite plugin
 
 Allowing you to specify the modules you want to externalize from node_modules in development and a CDN in production.
@@ -27,40 +29,40 @@ Add it to vite.config.js
 import importToCDN from 'vite-plugin-cdn-import'
 
 export default {
-  plugins: [
-    importToCDN({
-      modules: [
-        {
-            name: 'react',
-            var: 'React',
-            path: `umd/react.production.min.js`,
-        },
-        {
-            name: 'react-dom',
-            var: 'ReactDOM',
-            path: `umd/react-dom.production.min.js`,
-        }
-      ]
-    }),
-  ],
+    plugins: [
+        importToCDN({
+            modules: [
+                {
+                    name: 'react',
+                    var: 'React',
+                    path: `umd/react.production.min.js`,
+                },
+                {
+                    name: 'react-dom',
+                    var: 'ReactDOM',
+                    path: `umd/react-dom.production.min.js`,
+                },
+            ],
+        }),
+    ],
 }
 ```
 
 ### Options
 
-| Name    | Description                                                  | Type          | Default                                              |
-| ------- | ------------------------------------------------------------ | ------------- | ---------------------------------------------------- |
-| prodUrl | Overrides the global prodUrl, allowing you to specify the CDN location for a specific module | string        | <https://cdn.jsdelivr.net/npm/{name}@{version}/{path>} |
-| modules | Modules config                                               | Array`<Module>` | -                                                    |
+| Name    | Description                                                                                  | Type            | Default                                                |
+| ------- | -------------------------------------------------------------------------------------------- | --------------- | ------------------------------------------------------ |
+| prodUrl | Overrides the global prodUrl, allowing you to specify the CDN location for a specific module | string          | <https://cdn.jsdelivr.net/npm/{name}@{version}/{path>} |
+| modules | Modules config                                                                               | Array`<Module>` | -                                                      |
 
 #### Module
 
-| Name | Description                                                  | Type   |
-| ---- | ------------------------------------------------------------ | ------ |
-| name | The name of the module you want to externalize               | string |
-| var  | A variable that will be assigned to the module in global scope, Rollup requires this | string |
-| path | Specify the load path on the CDN                             | string |
-| css  | You can alternatively specify multiple style sheets which will be loaded from the CDN                             | string / string[] |
+| Name | Description                                                                           | Type              |
+| ---- | ------------------------------------------------------------------------------------- | ----------------- |
+| name | The name of the module you want to externalize                                        | string            |
+| var  | A variable that will be assigned to the module in global scope, Rollup requires this  | string            |
+| path | Specify the load path on the CDN                                                      | string / string[] |
+| css  | You can alternatively specify multiple style sheets which will be loaded from the CDN | string / string[] |
 
 ### Other CDN pordUrl
 
@@ -71,5 +73,5 @@ export default {
 
 ### Ressources
 
-- [webpack-cdn-plugin](https://github.com/shirotech/webpack-cdn-plugin)
-- [rollup-plugin-external-globals](https://github.com/eight04/rollup-plugin-external-globals)
+-   [webpack-cdn-plugin](https://github.com/shirotech/webpack-cdn-plugin)
+-   [rollup-plugin-external-globals](https://github.com/eight04/rollup-plugin-external-globals)

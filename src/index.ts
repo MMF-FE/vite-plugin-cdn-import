@@ -6,7 +6,7 @@ import { Plugin } from 'vite'
 interface Module {
     name: string
     var: string
-    path: string
+    path: string | string[]
     css?: string | string[]
 }
 
@@ -33,11 +33,18 @@ function getModuleVersion(name: string): string {
 function renderUrl(url: string, data: {
     name: string
     version: string
-    path: string
+    path: string | string[]
 }) {
+    let path = ''
+    if (Array.isArray(path)) {
+        path = data.path[0]
+    }else {
+        path = data.path as string
+    }
+
     return url.replace(/\{name\}/g, data.name)
         .replace(/\{version\}/g, data.version)
-        .replace(/\{path\}/g, data.path)
+        .replace(/\{path\}/g, path)
 }
 
 function PluginImportToCDN(options: Options): Plugin[] {
@@ -57,14 +64,19 @@ function PluginImportToCDN(options: Options): Plugin[] {
         }
         const url = renderUrl(prodUrl, data)
         let css = v.css || []
+
         if (!Array.isArray(css) && css) {
             css = [css]
         }
 
+
         return {
             ...v,
             version,
-            url,
+            urlList: !Array.isArray(url) ? [] : url.map((u) => renderUrl(prodUrl, {
+                ...data,
+                path: u
+            })),
             cssList: !Array.isArray(css) ? [] : css.map(c => renderUrl(prodUrl, {
                 ...data,
                 path: c
@@ -92,7 +104,8 @@ function PluginImportToCDN(options: Options): Plugin[] {
                 const jsCode = isDev
                     ? ''
                     : data
-                        .map((v) => `<script src="${v.url}"></script>`)
+                        .map((v) => v.urlList.map(url => `<script src="${url}"></script>`).join('\n'))
+                        .filter(v => v)
                         .join('\n')
 
                 return html.replace(
@@ -104,6 +117,7 @@ function PluginImportToCDN(options: Options): Plugin[] {
     ]
 
     if (!isDev) {
+        console.log(externalMap,'externalMap')
         plugins.push(externalGlobals(externalMap),)
     }
 
