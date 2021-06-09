@@ -1,6 +1,6 @@
 import { defineConfig } from 'vite'
 import reactRefresh from '@vitejs/plugin-react-refresh'
-import importToCDN from 'vite-plugin-cdn-import'
+import importToCDN from '../../dist/index'
 
 // https://vitejs.dev/config/
 export default defineConfig({

@@ -33,15 +33,15 @@ function getModuleVersion(name: string): string {
 function renderUrl(url: string, data: {
     name: string
     version: string
-    path: string | string[]
+    path: string
 }) {
-    let path = ''
-    if (Array.isArray(path)) {
-        path = data.path[0]
-    }else {
-        path = data.path as string
+    const { path } = data
+    if (path.startsWith('http:') 
+        || path.startsWith('https:')
+        || path.startsWith('//')
+    ) {
+        url = path
     }
-
     return url.replace(/\{name\}/g, data.name)
         .replace(/\{version\}/g, data.version)
         .replace(/\{path\}/g, path)
@@ -58,29 +58,40 @@ function PluginImportToCDN(options: Options): Plugin[] {
 
     const data = modules.map((v) => {
         const version = getModuleVersion(v.name)
+        let pathList: string[] = []
+        if (!Array.isArray(v.path)) {
+            pathList.push(v.path)
+        } else {
+            pathList = v.path
+        }
+
         const data = {
             ...v,
             version
         }
-        const url = renderUrl(prodUrl, data)
-        let css = v.css || []
 
+        pathList = pathList.map(p => {
+            return renderUrl(prodUrl, {
+                ...data,
+                path: p
+            })
+        })
+
+        let css = v.css || []
         if (!Array.isArray(css) && css) {
             css = [css]
         }
 
+        const cssList = !Array.isArray(css) ? [] : css.map(c => renderUrl(prodUrl, {
+            ...data,
+            path: c
+        }))
 
         return {
             ...v,
             version,
-            urlList: !Array.isArray(url) ? [] : url.map((u) => renderUrl(prodUrl, {
-                ...data,
-                path: u
-            })),
-            cssList: !Array.isArray(css) ? [] : css.map(c => renderUrl(prodUrl, {
-                ...data,
-                path: c
-            }))
+            pathList,
+            cssList
         }
     })
 
@@ -104,8 +115,7 @@ function PluginImportToCDN(options: Options): Plugin[] {
                 const jsCode = isDev
                     ? ''
                     : data
-                        .map((v) => v.urlList.map(url => `<script src="${url}"></script>`).join('\n'))
-                        .filter(v => v)
+                        .map(p => p.pathList.map(url => `<script src="${url}"></script>`).join('\n'))
                         .join('\n')
 
                 return html.replace(
@@ -117,7 +127,6 @@ function PluginImportToCDN(options: Options): Plugin[] {
     ]
 
     if (!isDev) {
-        console.log(externalMap,'externalMap')
         plugins.push(externalGlobals(externalMap),)
     }
 
