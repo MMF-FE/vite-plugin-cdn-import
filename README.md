@@ -1,6 +1,6 @@
 ## CDN extension for the vite plugin
 
-[中文文档点击此处阅读中文版(Click here to read the Chinese version)跳转](README_zhCN.md)
+[中文文档点击此处阅读中文版(Click here to read the Chinese version)](README_zhCN.md)
 
 Allowing you to specify the modules you want to externalize from node_modules in development and a CDN in production.
 
