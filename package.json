@@ -24,7 +24,8 @@
         "dev": "npm run build -- --watch",
         "example:vue": "npm -C example/vue run dev",
         "example:react": "npm -C example/react run dev",
-        "example:build": "npm -C example run build",
+        "example:vue:build": "npm -C example/vue run build",
+        "example:react:build": "npm -C example/react run build",
         "build": "tsup src/index.ts --dts --format cjs,esm"
     },
     "author": "vfasky<vfasky@me.com>",
