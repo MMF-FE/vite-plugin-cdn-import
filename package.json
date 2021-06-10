@@ -22,7 +22,8 @@
     },
     "scripts": {
         "dev": "npm run build -- --watch",
-        "example:dev": "npm -C example run dev",
+        "example:vue": "npm -C example/vue run dev",
+        "example:react": "npm -C example/react run dev",
         "example:build": "npm -C example run build",
         "build": "tsup src/index.ts --dts --format cjs,esm"
     },

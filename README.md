@@ -1,5 +1,7 @@
 ## CDN extension for the vite plugin
 
+[中文文档点击此处阅读中文版(Click here to read the Chinese version)跳转](README_zhCN.md)
+
 Allowing you to specify the modules you want to externalize from node_modules in development and a CDN in production.
 
 Basically this will allow you to greatly reduce build time when developing and improve page load performance on production.
@@ -167,5 +169,5 @@ export default {
 
 ### Ressources
 
-- [webpack-cdn-plugin](https://github.com/shirotech/webpack-cdn-plugin)
-- [rollup-plugin-external-globals](https://github.com/eight04/rollup-plugin-external-globals)
+-   [webpack-cdn-plugin](https://github.com/shirotech/webpack-cdn-plugin)
+-   [rollup-plugin-external-globals](https://github.com/eight04/rollup-plugin-external-globals)
