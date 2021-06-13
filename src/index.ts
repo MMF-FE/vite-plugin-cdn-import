@@ -78,7 +78,7 @@ function PluginImportToCDN(options: Options): Plugin[] {
 
         pathList = pathList.map(p => {
             if (!version && !isFullPath(p)) {
-                throw new Error (`modules: ${data.name} package.json file does not exist`)
+                throw new Error(`modules: ${data.name} package.json file does not exist`)
             }
             return renderUrl(prodUrl, {
                 ...data,

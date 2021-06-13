@@ -104,13 +104,17 @@ function isJsdeliver(prodUrl: string) {
 	return prodUrl.includes('//cdn.jsdelivr.net')
 }
 
+function isUnpkg(prodUrl: string) {
+	return prodUrl.includes('//unpkg.com')
+}
+
 export default function autoComplete(name: ModuleName) {
 	const config = modulesConfig[name]
 	if (!config) {
 		throw new Error(`The configuration of module ${name} does not exist `)
 	}
 	return (prodUrl: string) => {
-		if (isJsdeliver(prodUrl)) {
+		if (isJsdeliver(prodUrl) || isUnpkg(prodUrl)) {
 			return {
 				name,
 				var: config.var,
