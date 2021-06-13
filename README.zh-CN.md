@@ -1,26 +1,29 @@
-## CDN extension for the vite plugin
+# 从 CDN 加载 modules 的 vite 插件
 
-[Click here to read in English(点击此处阅读英文版)](README.md)
+[English](README.md) | 简体中文
 
-允许指定开发环境中的 node_modules 或者生产环境中的模块 CDN 外部化
+[![GitHub tag](https://img.shields.io/github/tag/MMF-FE/vite-plugin-cdn-import.svg)](https://github.com/MMF-FE/vite-plugin-cdn-import/releases)
+[![License](https://img.shields.io/github/license/SafdarJamal/vite-template-react)](https://github.com/MMF-FE/vite-plugin-cdn-import/blob/master/LICENSE)
 
-这可以在开发过程中减少构建时间并且可以提高生产环境中的页面加载速度
+允许指定 modules 在生产环境中使用 CDN 引入。
 
-### 安装
+这可以减少构建时间,并且提高生产环境中页面加载速度。
+
+## 安装
 
 下载 npm 插件
 
-```
+```bash
 npm install vite-plugin-cdn-import --save-dev
 ```
 
 or yarn
 
-```
+```bash
 yarn add vite-plugin-cdn-import -D
 ```
 
-### 基本用法
+## 基本用法
 
 ```js
 // vite.config.js
@@ -46,14 +49,14 @@ export default {
 }
 ```
 
-### 参数
+## 参数
 
 | Name    | Description                                            | Type            | Default                                                |
 | ------- | ------------------------------------------------------ | --------------- | ------------------------------------------------------ |
 | prodUrl | 覆盖全局 prodUrl 属性，允许为特定的模块指定 CDN 的位置 | string          | <https://cdn.jsdelivr.net/npm/{name}@{version}/{path}> |
 | modules | 模块配置                                               | Array`<Module>` | -                                                      |
 
-#### Module 配置
+### Module 配置
 
 | Name | Description                                   | Type              |
 | ---- | --------------------------------------------- | ----------------- |
@@ -62,16 +65,16 @@ export default {
 | path | 指定 CDN 上的加载路径                         | string / string[] |
 | css  | 可以指定从 CDN 地址上加载多个样式表           | string / string[] |
 
-### 其他的 CDN pordUrl 地址
+## 其他的 CDN pordUrl 地址
 
 | Name  | pordUrl                                                  |
 | ----- | -------------------------------------------------------- |
 | unpkg | //unpkg.com/{name}@{version}/{path}                      |
 | cdnjs | //cdnjs.cloudflare.com/ajax/libs/{name}/{version}/{path} |
 
-### Module 配置参考
+## Module 配置参考
 
-#### React 相关的
+### React 相关的
 
 ```js
 {
@@ -107,7 +110,7 @@ export default {
 },
 ```
 
-#### Vue 相关的
+### Vue 相关的
 
 ```js
 //Vue3
@@ -135,7 +138,7 @@ export default {
 },
 ```
 
-#### 其他
+### 其他
 
 ```js
 {
@@ -165,7 +168,7 @@ export default {
 },
 ```
 
-### 资源
+## 资源
 
--   [webpack-cdn-plugin](https://github.com/shirotech/webpack-cdn-plugin)
--   [rollup-plugin-external-globals](https://github.com/eight04/rollup-plugin-external-globals)
+- [webpack-cdn-plugin](https://github.com/shirotech/webpack-cdn-plugin)
+- [rollup-plugin-external-globals](https://github.com/eight04/rollup-plugin-external-globals)

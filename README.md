@@ -1,12 +1,15 @@
-## CDN extension for the vite plugin
+# Import modules from CDN with vite plugin
 
-[中文文档点击此处阅读中文版(Click here to read the Chinese version)](README_zhCN.md)
+English | [简体中文](README.zh-CN.md)
 
-Allowing you to specify the modules you want to externalize from node_modules in development and a CDN in production.
+[![GitHub tag](https://img.shields.io/github/tag/MMF-FE/vite-plugin-cdn-import.svg)](https://github.com/MMF-FE/vite-plugin-cdn-import/releases)
+[![License](https://img.shields.io/github/license/SafdarJamal/vite-template-react)](https://github.com/MMF-FE/vite-plugin-cdn-import/blob/master/LICENSE)
 
-Basically this will allow you to greatly reduce build time when developing and improve page load performance on production.
+Allows you to specify modules to be introduced in a production environment using a CDN.
 
-### Installation
+This can reduce build time and improve page load speed in production environments.
+
+## Installation
 
 Install the plugin with npm:
 
@@ -20,7 +23,7 @@ or yarn
 yarn add vite-plugin-cdn-import -D
 ```
 
-### Basic Usage
+## Basic Usage
 
 Add it to vite.config.js
 
@@ -48,14 +51,14 @@ export default {
 }
 ```
 
-### Options
+## Options
 
 | Name    | Description                                                                                  | Type            | Default                                                |
 | ------- | -------------------------------------------------------------------------------------------- | --------------- | ------------------------------------------------------ |
 | prodUrl | Overrides the global prodUrl, allowing you to specify the CDN location for a specific module | string          | <https://cdn.jsdelivr.net/npm/{name}@{version}/{path}> |
 | modules | Modules config                                                                               | Array`<Module>` | -                                                      |
 
-#### Module
+### Module
 
 | Name | Description                                                                           | Type              |
 | ---- | ------------------------------------------------------------------------------------- | ----------------- |
@@ -64,16 +67,16 @@ export default {
 | path | Specify the load path on the CDN                                                      | string / string[] |
 | css  | You can alternatively specify multiple style sheets which will be loaded from the CDN | string / string[] |
 
-### Other CDN pordUrl
+## Other CDN pordUrl
 
 | Name  | pordUrl                                                  |
 | ----- | -------------------------------------------------------- |
 | unpkg | //unpkg.com/{name}@{version}/{path}                      |
 | cdnjs | //cdnjs.cloudflare.com/ajax/libs/{name}/{version}/{path} |
 
-### Module Configuration Reference
+## Module Configuration Reference
 
-#### React Related
+### React Related
 
 ```js
 {
@@ -109,7 +112,7 @@ export default {
 },
 ```
 
-#### Vue Related
+### Vue Related
 
 ```js
 //Vue3
@@ -137,7 +140,7 @@ export default {
 },
 ```
 
-#### other
+### Other
 
 ```js
 {
@@ -167,7 +170,7 @@ export default {
 },
 ```
 
-### Ressources
+## Ressources
 
--   [webpack-cdn-plugin](https://github.com/shirotech/webpack-cdn-plugin)
--   [rollup-plugin-external-globals](https://github.com/eight04/rollup-plugin-external-globals)
+- [webpack-cdn-plugin](https://github.com/shirotech/webpack-cdn-plugin)
+- [rollup-plugin-external-globals](https://github.com/eight04/rollup-plugin-external-globals)
