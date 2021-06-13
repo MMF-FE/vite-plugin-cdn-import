@@ -2,18 +2,8 @@ import externalGlobals from 'rollup-plugin-external-globals'
 import fs from 'fs'
 import path from 'path'
 import { Plugin } from 'vite'
-
-interface Module {
-    name: string
-    var: string
-    path: string | string[]
-    css?: string | string[]
-}
-
-interface Options {
-    modules: Module[]
-    prodUrl?: string
-}
+import { Module, Options } from './type'
+import autoComplete from './autoComplete'
 
 /**
  * get npm module version
@@ -66,7 +56,13 @@ function PluginImportToCDN(options: Options): Plugin[] {
 
     const isDev = process.env.NODE_ENV !== 'production'
 
-    const data = modules.map((v) => {
+    const data = modules.map((m) => {
+        let v: Module
+        if (typeof m === 'function') {
+            v = m(prodUrl)
+        } else {
+            v = m
+        }
         const version = getModuleVersion(v.name)
         let pathList: string[] = []
         if (!Array.isArray(v.path)) {
@@ -140,7 +136,7 @@ function PluginImportToCDN(options: Options): Plugin[] {
     ]
 
     if (!isDev) {
-        plugins.push(externalGlobals(externalMap),)
+        plugins.push(externalGlobals(externalMap))
     }
 
     return plugins
@@ -149,6 +145,7 @@ function PluginImportToCDN(options: Options): Plugin[] {
 export {
     PluginImportToCDN as Plugin,
     Options,
+    autoComplete,
 }
 
 export default PluginImportToCDN

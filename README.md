@@ -29,6 +29,7 @@ Add it to vite.config.js
 
 ```js
 // vite.config.js
+import reactRefresh from '@vitejs/plugin-react-refresh'
 import importToCDN from 'vite-plugin-cdn-import'
 
 export default {
@@ -51,12 +52,58 @@ export default {
 }
 ```
 
+### Use autoComplete
+
+```js
+// vite.config.js
+import reactRefresh from '@vitejs/plugin-react-refresh'
+import importToCDN, { autoComplete } from 'vite-plugin-cdn-import'
+
+export default {
+    plugins: [
+        importToCDN({
+            modules: [
+                autoComplete('react'),
+                autoComplete('react-dom')
+            ],
+        }),
+        reactRefresh(),
+    ],
+}
+```
+
+### Autocomplete supported modules
+
+```
+"react" | "react-dom" | "react-router-dom" | "antd" | "ahooks" | "@ant-design/charts" | "vue" | "vue2" | "@vueuse/shared" | "@vueuse/core" | "moment" | "eventemitter3" | "file-saver" | "browser-md5-file" | "xlsx"
+```
+
+### VueUse demo
+
+```js
+import vue from '@vitejs/plugin-vue'
+import importToCDN, { autoComplete } from 'vite-plugin-cdn-import'
+
+export default {
+    plugins: [
+        vue(),
+        importToCDN({
+            modules: [
+                autoComplete('vue'), // vue2 use autoComplete('vue2')
+                autoComplete('@vueuse/shared'),
+                autoComplete('@vueuse/core')
+            ],
+        }),
+    ],
+}
+```
+
 ## Options
 
 | Name    | Description                                                                                  | Type            | Default                                                |
 | ------- | -------------------------------------------------------------------------------------------- | --------------- | ------------------------------------------------------ |
 | prodUrl | Overrides the global prodUrl, allowing you to specify the CDN location for a specific module | string          | <https://cdn.jsdelivr.net/npm/{name}@{version}/{path}> |
-| modules | Modules config                                                                               | Array`<Module>` | -                                                      |
+| modules | Modules config                                                                               | Array`<Module>` / Array`<(prodUrl:string) => Module>` | -                                                      |
 
 ### Module
 
@@ -73,102 +120,6 @@ export default {
 | ----- | -------------------------------------------------------- |
 | unpkg | //unpkg.com/{name}@{version}/{path}                      |
 | cdnjs | //cdnjs.cloudflare.com/ajax/libs/{name}/{version}/{path} |
-
-## Module Configuration Reference
-
-### React Related
-
-```js
-{
-    name: 'react',
-    var: 'React',
-    path: 'umd/react.production.min.js',
-},
-{
-    name: 'react-dom',
-    var: 'ReactDOM',
-    path: 'umd/react-dom.production.min.js',
-},
-{
-    name: 'react-router-dom',
-    var: 'ReactRouterDOM',
-    path: 'umd/react-router-dom.min.js'
-},
-{
-    name: 'antd',
-    var: 'antd',
-    path: 'dist/antd.min.js',
-    css: 'dist/antd.min.css'
-},
-{
-    name: 'ahooks',
-    var: 'ahooks',
-    path: 'dist/ahooks.js'
-},
-{
-    name: '@ant-design/charts',
-    var: 'charts',
-    path: 'dist/charts.min.js',
-},
-```
-
-### Vue Related
-
-```js
-//Vue3
-{
-    name: 'vue',
-    var: 'Vue',
-    path: 'dist/vue.global.prod.js',
-},
-//Vue2
-{
-    name: 'vue',
-    var: 'Vue',
-    path: 'dist/vue.runtime.min.js',
-},
-//VueUse
-{
-    name: '@vueuse/shared',
-    var: 'VueUse',
-    path: 'index.iife.min.js'
-},
-{
-    name: '@vueuse/core',
-    var: 'VueUse',
-    path: 'index.iife.min.js',
-},
-```
-
-### Other
-
-```js
-{
-    name: 'moment',
-    var: 'moment',
-    path: 'moment.min.js',
-},
-{
-    name: 'eventemitter3',
-    var: 'EventEmitter3',
-    path: 'umd/eventemitter3.min.js'
-},
-{
-    name: 'file-saver',
-    var: 'window',
-    path: 'dist/FileSaver.min.js'
-},
-{
-    name: 'browser-md5-file',
-    var: 'browserMD5File',
-    path: 'dist/index.umd.min.js',
-},
-{
-    name: 'xlsx',
-    var: 'XLSX',
-    path: 'dist/xlsx.full.min.js',
-},
-```
 
 ## Ressources
 
