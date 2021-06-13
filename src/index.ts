@@ -27,7 +27,19 @@ function getModuleVersion(name: string): string {
         const pkgJson = JSON.parse(fs.readFileSync(pkgFile, 'utf8'))
         return pkgJson.version
     }
-    throw new Error(`modules: ${name} package.json file does not exist`)
+
+    return ''
+}
+
+/**
+ * 是否完整的 url
+ * @param path 
+ * @returns 
+ */
+function isFullPath(path: string) {
+    return path.startsWith('http:')
+        || path.startsWith('https:')
+        || path.startsWith('//') ? true : false
 }
 
 function renderUrl(url: string, data: {
@@ -36,9 +48,7 @@ function renderUrl(url: string, data: {
     path: string
 }) {
     const { path } = data
-    if (path.startsWith('http:') 
-        || path.startsWith('https:')
-        || path.startsWith('//')
+    if (isFullPath(path)
     ) {
         url = path
     }
@@ -71,6 +81,9 @@ function PluginImportToCDN(options: Options): Plugin[] {
         }
 
         pathList = pathList.map(p => {
+            if (!version && !isFullPath(p)) {
+                throw new Error (`modules: ${data.name} package.json file does not exist`)
+            }
             return renderUrl(prodUrl, {
                 ...data,
                 path: p
