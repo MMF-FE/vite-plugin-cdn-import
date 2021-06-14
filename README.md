@@ -75,7 +75,13 @@ export default {
 ### Autocomplete supported modules
 
 ```
-"react" | "react-dom" | "react-router-dom" | "antd" | "ahooks" | "@ant-design/charts" | "vue" | "vue2" | "@vueuse/shared" | "@vueuse/core" | "moment" | "eventemitter3" | "file-saver" | "browser-md5-file" | "xlsx"
+"react" | "react-dom" | "react-router-dom" | 
+"antd" | "ahooks" | "@ant-design/charts" | 
+"vue" | "vue2" | "@vueuse/shared" | 
+"@vueuse/core" | "moment" | 
+"eventemitter3" | "file-saver" | 
+"browser-md5-file" | "xlsx | "crypto-js" |
+"axios" | "lodash" | "localforage"
 ```
 
 ### VueUse demo

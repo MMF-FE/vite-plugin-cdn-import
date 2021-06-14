@@ -96,6 +96,30 @@ const modulesConfig = {
 			path: 'dist/xlsx.full.min.js'
 		}
 	},
+	'axios': {
+		var: 'axios',
+		jsdeliver: {
+			path: 'dist/axios.min.js'
+		}
+	},
+    'lodash': {
+        var: '_',
+        jsdeliver: {
+			path: 'lodash.min.js'
+		}
+    },
+    'crypto-js': {
+        var: 'crypto-js',
+        jsdeliver: {
+			path: 'crypto-js.min.js'
+		}
+    },
+    'localforage': {
+        var: 'localforage',
+        jsdeliver: {
+			path: 'dist/localforage.min.js'
+		}
+    },
 }
 
 export type ModuleName = keyof typeof modulesConfig
@@ -108,20 +132,27 @@ function isUnpkg(prodUrl: string) {
 	return prodUrl.includes('//unpkg.com')
 }
 
+function isCdnjs(prodUrl: string) {
+	return prodUrl.includes('//cdnjs.cloudflare.com')
+}
+
 export default function autoComplete(name: ModuleName) {
 	const config = modulesConfig[name]
 	if (!config) {
 		throw new Error(`The configuration of module ${name} does not exist `)
 	}
 	return (prodUrl: string) => {
-		if (isJsdeliver(prodUrl) || isUnpkg(prodUrl)) {
-			return {
+		if (isCdnjs(prodUrl)){
+			throw new Error(`The configuration of module ${name} in ${prodUrl} does not exist `)
+        } else {
+            if (!(isJsdeliver(prodUrl) || isUnpkg(prodUrl))) {
+                console.warn('Unknown prodUrl, using the jsdeliver rule')
+            }
+            return {
 				name,
 				var: config.var,
 				...config.jsdeliver
 			} as Module
-		} else {
-			throw new Error(`The configuration of module ${name} in ${prodUrl} does not exist `)
-		}
+        }
 	}
 }
