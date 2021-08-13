@@ -54,7 +54,7 @@ function PluginImportToCDN(options: Options): Plugin[] {
         prodUrl = 'https://cdn.jsdelivr.net/npm/{name}@{version}/{path}',
     } = options
 
-    const isDev = process.env.NODE_ENV !== 'production'
+    let isBuild = false
 
     const data = modules.map((m) => {
         let v: Module
@@ -115,13 +115,20 @@ function PluginImportToCDN(options: Options): Plugin[] {
     const plugins: Plugin[] = [
         {
             name: 'vite-plugin-cdn-import',
+            config(config, { command }) {
+                if (command === 'build') {
+                    isBuild = true
+                } else {
+                    isBuild = false
+                }
+            },
             transformIndexHtml(html) {
                 const cssCode = data
                     .map(v => v.cssList.map(css => `<link href="${css}" rel="stylesheet">`).join('\n'))
                     .filter(v => v)
                     .join('\n')
 
-                const jsCode = isDev
+                const jsCode = !isBuild
                     ? ''
                     : data
                         .map(p => p.pathList.map(url => `<script src="${url}"></script>`).join('\n'))
@@ -135,7 +142,7 @@ function PluginImportToCDN(options: Options): Plugin[] {
         },
     ]
 
-    if (!isDev) {
+    if (isBuild) {
         plugins.push(externalGlobals(externalMap))
     }
 
