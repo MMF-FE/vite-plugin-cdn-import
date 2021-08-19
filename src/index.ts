@@ -1,7 +1,7 @@
 import externalGlobals from 'rollup-plugin-external-globals'
 import fs from 'fs'
 import path from 'path'
-import { Plugin } from 'vite'
+import { Plugin, UserConfig } from 'vite'
 import { Module, Options } from './type'
 import autoComplete from './autoComplete'
 
@@ -112,15 +112,32 @@ function PluginImportToCDN(options: Options): Plugin[] {
         externalMap[v.name] = v.var
     })
 
+    const externalLibs = Object.keys(externalMap)
+
     const plugins: Plugin[] = [
         {
             name: 'vite-plugin-cdn-import',
-            config(config, { command }) {
+            config(_, { command }) {
+                const userConfig: UserConfig = {
+                    build: {
+                        rollupOptions: {}
+                    }
+                }
+
                 if (command === 'build') {
                     isBuild = true
+
+                    userConfig!.build!.rollupOptions = {
+                        external: [...externalLibs],
+                        plugins: [externalGlobals(externalMap)]
+                    }
+
+
                 } else {
                     isBuild = false
                 }
+
+                return userConfig
             },
             transformIndexHtml(html) {
                 const cssCode = data
@@ -141,10 +158,6 @@ function PluginImportToCDN(options: Options): Plugin[] {
             },
         },
     ]
-
-    if (isBuild) {
-        plugins.push(externalGlobals(externalMap))
-    }
 
     return plugins
 }
