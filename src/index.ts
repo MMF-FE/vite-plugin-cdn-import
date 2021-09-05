@@ -108,11 +108,21 @@ function PluginImportToCDN(options: Options): Plugin[] {
         [name: string]: string
     } = {}
 
+    const externalCSS: {
+        [name: string]: string
+    } = {}
+
     data.forEach((v) => {
         externalMap[v.name] = v.var
+
+        if (v.css) {
+            externalCSS[v.name] = v.name
+        }
     })
 
     const externalLibs = Object.keys(externalMap)
+
+    const externalCssLibs = Object.keys(externalCSS)
 
     const plugins: Plugin[] = [
         {
@@ -127,7 +137,7 @@ function PluginImportToCDN(options: Options): Plugin[] {
                 if (command === 'build') {
                     isBuild = true
 
-                    userConfig!.build!.rollupOptions = {
+                    userConfig.build!.rollupOptions = {
                         external: [...externalLibs],
                         plugins: [externalGlobals(externalMap)]
                     }
@@ -138,6 +148,15 @@ function PluginImportToCDN(options: Options): Plugin[] {
                 }
 
                 return userConfig
+            },
+            load(id) {
+                if (isBuild) {
+                    for (let i of externalCssLibs) {
+                        if (id.includes(i as string)) {
+                            return ''
+                        }
+                    }
+                }
             },
             transformIndexHtml(html) {
                 const cssCode = data
