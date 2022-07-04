@@ -4,6 +4,7 @@ import path from 'path'
 import { Plugin, UserConfig } from 'vite'
 import { Module, Options } from './type'
 import autoComplete from './autoComplete'
+import pkgUp from 'pkg-up'
 
 /**
  * get npm module version
@@ -11,10 +12,11 @@ import autoComplete from './autoComplete'
  * @returns
  */
 function getModuleVersion(name: string): string {
-    const pwd = process.cwd()
-    const pkgFile = path.join(pwd, 'node_modules', name, 'package.json')
-    if (fs.existsSync(pkgFile)) {
-        const pkgJson = JSON.parse(fs.readFileSync(pkgFile, 'utf8'))
+    const packageJsonPath = pkgUp.sync({
+        cwd: require.resolve(name),
+      })
+    if (fs.existsSync(packageJsonPath)) {
+        const pkgJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'))
         return pkgJson.version
     }
 
