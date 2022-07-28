@@ -140,7 +140,9 @@ function PluginImportToCDN(options: Options): Plugin[] {
                 return userConfig
             },
             transformIndexHtml(html) {
-                const cssCode = data
+                const cssCode = !isBuild
+                    ? ''
+                    :data
                     .map(v => v.cssList.map(css => `<link href="${css}" rel="stylesheet">`).join('\n'))
                     .filter(v => v)
                     .join('\n')
@@ -148,7 +150,7 @@ function PluginImportToCDN(options: Options): Plugin[] {
                 const jsCode = !isBuild
                     ? ''
                     : data
-                        .map(p => p.pathList.map(url => `<script src="${url}"></script>`).join('\n'))
+                        .map(p => p.pathList.map(url => `<script src="${url}"${p.es6 ? 'type="module"' : ''}></script>`).join('\n'))
                         .join('\n')
 
                 return html.replace(
