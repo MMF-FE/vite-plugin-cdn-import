@@ -55,7 +55,7 @@ function PluginImportToCDN(options: Options): Plugin[] {
     } = options
 
     let isBuild = false
-
+    let onlyCss = false
     const data = modules.map((m) => {
         let v: Module
         if (typeof m === 'function') {
@@ -65,26 +65,35 @@ function PluginImportToCDN(options: Options): Plugin[] {
         }
         const version = getModuleVersion(v.name)
         let pathList: string[] = []
-        if (!Array.isArray(v.path)) {
-            pathList.push(v.path)
-        } else {
-            pathList = v.path
+        onlyCss = v.onlyCss ? true : false;
+        if (!onlyCss) {
+            
+            if (!Array.isArray(v.path)) {
+                pathList.push(v.path)
+            } else {
+                pathList = v.path
+            }
+
+            const data = {
+                ...v,
+                version
+            }
+
+            pathList = pathList.map(p => {
+                if (!version && !isFullPath(p)) {
+                    throw new Error(`modules: ${data.name} package.json file does not exist`)
+                }
+                return renderUrl(prodUrl, {
+                    ...data,
+                    path: p
+                })
+            })
         }
 
         const data = {
             ...v,
             version
         }
-
-        pathList = pathList.map(p => {
-            if (!version && !isFullPath(p)) {
-                throw new Error(`modules: ${data.name} package.json file does not exist`)
-            }
-            return renderUrl(prodUrl, {
-                ...data,
-                path: p
-            })
-        })
 
         let css = v.css || []
         if (!Array.isArray(css) && css) {
