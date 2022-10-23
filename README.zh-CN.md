@@ -117,6 +117,7 @@ export default {
 | var  | 全局分配给模块的变量，Rollup 需要这个变量名称 | string            |
 | path | 指定 CDN 上的加载路径                         | string / string[] |
 | css  | 可以指定从 CDN 地址上加载多个样式表           | string / string[] |
+| onlyCss  | 是否只导入css,该属性设置为true，path属性可不配置           | boolean |
 
 ## 其他的 CDN pordUrl 地址
 

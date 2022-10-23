@@ -113,12 +113,13 @@ export default {
 
 ### Module
 
-| Name | Description                                                                           | Type              |
-| ---- | ------------------------------------------------------------------------------------- | ----------------- |
-| name | The name of the module you want to externalize                                        | string            |
-| var  | A variable that will be assigned to the module in global scope, Rollup requires this  | string            |
-| path | Specify the load path on the CDN                                                      | string / string[] |
-| css  | You can alternatively specify multiple style sheets which will be loaded from the CDN | string / string[] |
+| Name | Description                                                                             | Type              |
+| ---- | -------------------------------------------------------------------------------------   | ----------------- |
+| name | The name of the module you want to externalize                                          | string            |
+| var  | A variable that will be assigned to the module in global scope, Rollup requires this    | string            |
+| path | Specify the load path on the CDN                                                        | string / string[] |
+| css  | You can alternatively specify multiple style sheets which will be loaded from the CDN   | string / string[] |
+| onlyCss  | If only css is imported, set this parameter to true. The path attribute is optional | boolean           |
 
 ## Other CDN pordUrl
 
