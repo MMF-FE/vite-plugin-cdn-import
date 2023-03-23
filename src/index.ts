@@ -140,15 +140,20 @@ function PluginImportToCDN(options: Options): Plugin[] {
                 return userConfig
             },
             transformIndexHtml(html) {
+
                 const cssCode = data
-                    .map(v => v.cssList.map(css => `<link href="${css}" rel="stylesheet">`).join('\n'))
+                    .map(v => v.cssList.map(css => `${v.htmlPrefix}<link href="${css}" rel="stylesheet">`).join('\n'))
                     .filter(v => v)
                     .join('\n')
 
                 const jsCode = !isBuild
                     ? ''
                     : data
-                        .map(p => p.pathList.map(url => `<script src="${url}"></script>`).join('\n'))
+                        .map(p => p.pathList.map(url => {
+                            const jsOptions = p.jsOptions ? ` ${p.jsOptions}` : ''
+                            return `${p.htmlPrefix}<script${jsOptions} src="${url}"></script>`
+                        }
+                        ).join('\n'))
                         .join('\n')
 
                 return html.replace(
