@@ -1,7 +1,7 @@
 import externalGlobals from 'rollup-plugin-external-globals'
 import fs from 'fs'
 import path from 'path'
-import { Plugin, UserConfig } from 'vite'
+import { Plugin as VitePlugin, UserConfig, HtmlTagDescriptor } from 'vite'
 import { Module, Options } from './type'
 import autoComplete from './autoComplete'
 
@@ -47,7 +47,7 @@ function renderUrl(url: string, data: {
         .replace(/\{path\}/g, path)
 }
 
-function PluginImportToCDN(options: Options): Plugin[] {
+function PluginImportToCDN(options: Options): VitePlugin[] {
 
     const {
         modules = [],
@@ -114,7 +114,7 @@ function PluginImportToCDN(options: Options): Plugin[] {
 
     const externalLibs = Object.keys(externalMap)
 
-    const plugins: Plugin[] = [
+    const plugins: VitePlugin[] = [
         {
             name: 'vite-plugin-cdn-import',
             config(_, { command }) {
@@ -140,21 +140,30 @@ function PluginImportToCDN(options: Options): Plugin[] {
                 return userConfig
             },
             transformIndexHtml(html) {
-                const cssCode = data
-                    .map(v => v.cssList.map(css => `<link href="${css}" rel="stylesheet">`).join('\n'))
-                    .filter(v => v)
-                    .join('\n')
+                const styleTags: HtmlTagDescriptor[] = data.reduce((prev, cur) => {
+                    return prev.concat(cur.cssList.map(css=>{
+                        return {
+                            tag:"link",
+                            attrs:{
+                                href: css,
+                                ref: "stylesheet",
+                            }
+                        }
+                    }))
+                }, [] as HtmlTagDescriptor[]);
 
-                const jsCode = !isBuild
-                    ? ''
-                    : data
-                        .map(p => p.pathList.map(url => `<script src="${url}"></script>`).join('\n'))
-                        .join('\n')
+                const scriptTags: HtmlTagDescriptor[] = data.reduce((prev, cur) => {
+                    return prev.concat(cur.pathList.map(url => {
+                        return {
+                            tag: "script",
+                            attrs: {
+                                src: url
+                            }
+                        }
+                    }))
+                }, [] as HtmlTagDescriptor[]);
 
-                return html.replace(
-                    /<\/title>/i,
-                    `</title>${cssCode}\n${jsCode}`
-                )
+                return styleTags.concat(scriptTags);
             },
         },
     ]
