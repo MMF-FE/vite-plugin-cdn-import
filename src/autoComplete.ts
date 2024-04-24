@@ -1,5 +1,9 @@
 import { Module } from './type'
 
+type AutoModuleConfig = Partial<Module> & {
+    jsdeliver: Partial<Module>
+}
+
 /**
  * module 配置自动完成
  */
@@ -12,6 +16,7 @@ const modulesConfig = {
     },
     'react-dom': {
         var: 'ReactDOM',
+        alias: ['react-dom/client'],
         jsdeliver: {
             path: 'umd/react-dom.production.min.js',
         },
@@ -120,7 +125,7 @@ const modulesConfig = {
             path: 'dist/localforage.min.js',
         },
     },
-}
+} satisfies Record<string, AutoModuleConfig>
 
 export type ModuleName = keyof typeof modulesConfig
 
@@ -137,7 +142,7 @@ function isCdnjs(prodUrl: string) {
 }
 
 export default function autoComplete(name: ModuleName) {
-    const config = modulesConfig[name]
+    const config = modulesConfig[name] as AutoModuleConfig
     if (!config) {
         throw new Error(`The configuration of module ${name} does not exist `)
     }
@@ -153,6 +158,7 @@ export default function autoComplete(name: ModuleName) {
             return {
                 name,
                 var: config.var,
+                alias: config.alias,
                 ...config.jsdeliver,
             } as Module
         }

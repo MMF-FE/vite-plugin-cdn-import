@@ -120,9 +120,12 @@ function PluginImportToCDN(options: Options): Plugin[] {
 
     data.forEach(v => {
         externalMap[v.name] = v.var
+        if (Array.isArray(v.alias)) {
+            v.alias.forEach(alias => {
+                externalMap[alias] = v.var
+            })
+        }
     })
-
-    const externalLibs = Object.keys(externalMap)
 
     const plugins: Plugin[] = [
         {
@@ -138,7 +141,6 @@ function PluginImportToCDN(options: Options): Plugin[] {
                     isBuild = true
 
                     userConfig!.build!.rollupOptions = {
-                        external: [...externalLibs],
                         plugins: [externalGlobals(externalMap)],
                     }
                 } else {
