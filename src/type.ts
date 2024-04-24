@@ -1,4 +1,3 @@
-
 export interface Module {
     name: string
     var: string

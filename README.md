@@ -62,10 +62,7 @@ import importToCDN, { autoComplete } from 'vite-plugin-cdn-import'
 export default {
     plugins: [
         importToCDN({
-            modules: [
-                autoComplete('react'),
-                autoComplete('react-dom')
-            ],
+            modules: [autoComplete('react'), autoComplete('react-dom')],
         }),
         reactRefresh(),
     ],
@@ -75,11 +72,11 @@ export default {
 ### Autocomplete supported modules
 
 ```
-"react" | "react-dom" | "react-router-dom" | 
-"antd" | "ahooks" | "@ant-design/charts" | 
-"vue" | "vue2" | "@vueuse/shared" | 
-"@vueuse/core" | "moment" | 
-"eventemitter3" | "file-saver" | 
+"react" | "react-dom" | "react-router-dom" |
+"antd" | "ahooks" | "@ant-design/charts" |
+"vue" | "vue2" | "@vueuse/shared" |
+"@vueuse/core" | "moment" |
+"eventemitter3" | "file-saver" |
 "browser-md5-file" | "xlsx | "crypto-js" |
 "axios" | "lodash" | "localforage"
 ```
@@ -97,7 +94,7 @@ export default {
             modules: [
                 autoComplete('vue'), // vue2 use autoComplete('vue2')
                 autoComplete('@vueuse/shared'),
-                autoComplete('@vueuse/core')
+                autoComplete('@vueuse/core'),
             ],
         }),
     ],
@@ -106,9 +103,9 @@ export default {
 
 ## Options
 
-| Name    | Description                                                                                  | Type            | Default                                                |
-| ------- | -------------------------------------------------------------------------------------------- | --------------- | ------------------------------------------------------ |
-| prodUrl | Overrides the global prodUrl, allowing you to specify the CDN location for a specific module | string          | <https://cdn.jsdelivr.net/npm/{name}@{version}/{path}> |
+| Name    | Description                                                                                  | Type                                                  | Default                                                |
+| ------- | -------------------------------------------------------------------------------------------- | ----------------------------------------------------- | ------------------------------------------------------ |
+| prodUrl | Overrides the global prodUrl, allowing you to specify the CDN location for a specific module | string                                                | <https://cdn.jsdelivr.net/npm/{name}@{version}/{path}> |
 | modules | Modules config                                                                               | Array`<Module>` / Array`<(prodUrl:string) => Module>` | -                                                      |
 
 ### Module
@@ -129,5 +126,5 @@ export default {
 
 ## Ressources
 
-- [webpack-cdn-plugin](https://github.com/shirotech/webpack-cdn-plugin)
-- [rollup-plugin-external-globals](https://github.com/eight04/rollup-plugin-external-globals)
+-   [webpack-cdn-plugin](https://github.com/shirotech/webpack-cdn-plugin)
+-   [rollup-plugin-external-globals](https://github.com/eight04/rollup-plugin-external-globals)

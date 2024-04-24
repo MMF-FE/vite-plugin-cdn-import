@@ -2,8 +2,9 @@
     "name": "vite-plugin-cdn-import",
     "version": "0.0.0",
     "description": "Import packages from CDN for the vite plugin",
-    "main": "dist/index.js",
-    "module": "dist/index.mjs",
+    "type": "module",
+    "main": "dist/index.cjs",
+    "module": "dist/index.js",
     "types": "dist/index.d.ts",
     "keywords": [
         "vite cdn plugin",
@@ -22,21 +23,32 @@
     },
     "scripts": {
         "dev": "npm run build -- --watch",
-        "example:vue": "npm -C example/vue run dev",
-        "example:react": "npm -C example/react run dev",
-        "example:vue:build": "npm -C example/vue run build",
-        "example:react:build": "npm -C example/react run build",
-        "build": "tsup src/index.ts --dts --format cjs,esm"
+        "build": "tsup src/index.ts --dts --format cjs,esm",
+        "example": "node ./scripts/run-example.js",
+        "prepare": "husky"
     },
     "author": "vfasky<vfasky@me.com>",
     "license": "MIT",
     "devDependencies": {
-        "@types/node": "^15.3.0",
-        "tsup": "^4.10.1",
-        "typescript": "^4.2.4",
-        "vite": "^2.3.7"
+        "@types/node": "^20.12.7",
+        "chalk": "^5.3.0",
+        "execa": "^8.0.1",
+        "husky": "^9.0.11",
+        "lint-staged": "^15.2.2",
+        "prettier": "^3.2.5",
+        "tsup": "^8.0.2",
+        "typescript": "^5.4.5",
+        "vite": "^5.2.10"
     },
     "dependencies": {
-        "rollup-plugin-external-globals": "^0.6.1"
+        "rollup-plugin-external-globals": "^0.10.0"
+    },
+    "lint-staged": {
+        "*.{ts,js,tsx,json,css,scss,less}": [
+            "prettier --write"
+        ],
+        "*.{scss,less}": [
+            "stylelint --fix"
+        ]
     }
 }

@@ -60,10 +60,7 @@ import importToCDN, { autoComplete } from 'vite-plugin-cdn-import'
 export default {
     plugins: [
         importToCDN({
-            modules: [
-                autoComplete('react'),
-                autoComplete('react-dom')
-            ],
+            modules: [autoComplete('react'), autoComplete('react-dom')],
         }),
         reactRefresh(),
     ],
@@ -73,11 +70,11 @@ export default {
 ### 自动完成支持的 module
 
 ```
-"react" | "react-dom" | "react-router-dom" | 
-"antd" | "ahooks" | "@ant-design/charts" | 
-"vue" | "vue2" | "@vueuse/shared" | 
-"@vueuse/core" | "moment" | 
-"eventemitter3" | "file-saver" | 
+"react" | "react-dom" | "react-router-dom" |
+"antd" | "ahooks" | "@ant-design/charts" |
+"vue" | "vue2" | "@vueuse/shared" |
+"@vueuse/core" | "moment" |
+"eventemitter3" | "file-saver" |
 "browser-md5-file" | "xlsx | "crypto-js" |
 "axios" | "lodash" | "localforage"
 ```
@@ -95,7 +92,7 @@ export default {
             modules: [
                 autoComplete('vue'), // vue2 使用 autoComplete('vue2')
                 autoComplete('@vueuse/shared'),
-                autoComplete('@vueuse/core')
+                autoComplete('@vueuse/core'),
             ],
         }),
     ],
@@ -104,9 +101,9 @@ export default {
 
 ## 参数
 
-| Name    | Description                                            | Type            | Default                                                |
-| ------- | ------------------------------------------------------ | --------------- | ------------------------------------------------------ |
-| prodUrl | 覆盖全局 prodUrl 属性，允许为特定的模块指定 CDN 的位置 | string          | <https://cdn.jsdelivr.net/npm/{name}@{version}/{path}> |
+| Name    | Description                                            | Type                                                  | Default                                                |
+| ------- | ------------------------------------------------------ | ----------------------------------------------------- | ------------------------------------------------------ |
+| prodUrl | 覆盖全局 prodUrl 属性，允许为特定的模块指定 CDN 的位置 | string                                                | <https://cdn.jsdelivr.net/npm/{name}@{version}/{path}> |
 | modules | 模块配置                                               | Array`<Module>` / Array`<(prodUrl:string) => Module>` | -                                                      |
 
 ### Module 配置
@@ -127,5 +124,5 @@ export default {
 
 ## 资源
 
-- [webpack-cdn-plugin](https://github.com/shirotech/webpack-cdn-plugin)
-- [rollup-plugin-external-globals](https://github.com/eight04/rollup-plugin-external-globals)
+-   [webpack-cdn-plugin](https://github.com/shirotech/webpack-cdn-plugin)
+-   [rollup-plugin-external-globals](https://github.com/eight04/rollup-plugin-external-globals)
