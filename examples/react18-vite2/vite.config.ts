@@ -7,6 +7,7 @@ export default defineConfig({
     plugins: [
         react(),
         importToCDN({
+            enableInDevMode: true,
             modules: [autoComplete('react'), autoComplete('react-dom')],
         }),
     ],

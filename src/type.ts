@@ -7,6 +7,8 @@ export interface Module {
 }
 
 export interface Options {
-    modules: (Module | ((prodUrl: string) => Module))[]
     prodUrl?: string
+    modules: (Module | ((prodUrl: string) => Module))[]
+    /** Enabled in dev mode, default is false */
+    enableInDevMode?: boolean
 }

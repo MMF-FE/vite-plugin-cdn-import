@@ -41,7 +41,8 @@
         "vite": "^5.2.10"
     },
     "dependencies": {
-        "rollup-plugin-external-globals": "^0.10.0"
+        "rollup-plugin-external-globals": "^0.10.0",
+        "vite-plugin-externals": "^0.6.2"
     },
     "lint-staged": {
         "*.{ts,js,tsx,json,css,scss,less}": [

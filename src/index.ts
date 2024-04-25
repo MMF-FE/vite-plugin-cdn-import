@@ -1,4 +1,6 @@
 import externalGlobals from 'rollup-plugin-external-globals'
+// import externalAlias from 'vite-plugin-external'
+import { viteExternalsPlugin } from 'vite-plugin-externals'
 import fs from 'fs'
 import path from 'path'
 import { Plugin, UserConfig } from 'vite'
@@ -56,6 +58,7 @@ function PluginImportToCDN(options: Options): Plugin[] {
     const {
         modules = [],
         prodUrl = 'https://cdn.jsdelivr.net/npm/{name}@{version}/{path}',
+        enableInDevMode = false,
     } = options
 
     let isBuild = false
@@ -130,26 +133,38 @@ function PluginImportToCDN(options: Options): Plugin[] {
     const plugins: Plugin[] = [
         {
             name: 'vite-plugin-cdn-import',
+            enforce: 'pre',
             config(_, { command }) {
-                const userConfig: UserConfig = {
+                isBuild = command === 'build'
+
+                let userConfig: UserConfig = {
+                    plugins: [],
                     build: {
-                        rollupOptions: {},
+                        rollupOptions: {
+                            plugins: [],
+                        },
                     },
                 }
 
-                if (command === 'build') {
-                    isBuild = true
-
-                    userConfig!.build!.rollupOptions = {
-                        plugins: [externalGlobals(externalMap)],
-                    }
-                } else {
-                    isBuild = false
+                if (isBuild) {
+                    userConfig.build!.rollupOptions!.plugins = [
+                        externalGlobals(externalMap),
+                    ]
+                } else if (enableInDevMode) {
+                    userConfig.plugins = [
+                        viteExternalsPlugin(externalMap, {
+                            enforce: 'pre',
+                        }),
+                    ]
                 }
 
                 return userConfig
             },
             transformIndexHtml(html) {
+                if (!isBuild && !enableInDevMode) {
+                    return html
+                }
+
                 const cssCode = data
                     .map(v =>
                         v.cssList
@@ -159,15 +174,13 @@ function PluginImportToCDN(options: Options): Plugin[] {
                     .filter(v => v)
                     .join('\n')
 
-                const jsCode = !isBuild
-                    ? ''
-                    : data
-                          .map(p =>
-                              p.pathList
-                                  .map(url => `<script src="${url}"></script>`)
-                                  .join('\n'),
-                          )
-                          .join('\n')
+                const jsCode = data
+                    .map(p =>
+                        p.pathList
+                            .map(url => `<script src="${url}"></script>`)
+                            .join('\n'),
+                    )
+                    .join('\n')
 
                 return html.replace(
                     /<\/title>/i,
