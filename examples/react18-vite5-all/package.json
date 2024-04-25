@@ -10,10 +10,17 @@
         "preview": "vite preview"
     },
     "dependencies": {
+        "antd": "^5.16.4",
+        "axios": "^1.6.8",
+        "dayjs": "^1.11.10",
+        "lodash": "^4.17.21",
+        "moment": "^2.30.1",
         "react": "^18.2.0",
-        "react-dom": "^18.2.0"
+        "react-dom": "^18.2.0",
+        "react-router-dom": "^6.23.0"
     },
     "devDependencies": {
+        "@types/lodash": "^4.17.0",
         "@types/react": "^18.2.66",
         "@types/react-dom": "^18.2.22",
         "@typescript-eslint/eslint-plugin": "^7.2.0",

@@ -8,7 +8,12 @@ export default defineConfig({
         react(),
         importToCDN({
             enableInDevMode: true,
-            modules: [autoComplete('react'), autoComplete('react-dom')],
+            modules: [
+                autoComplete(['react', 'react-dom', 'react-router-dom']),
+                autoComplete(['dayjs', 'antd']),
+                autoComplete('lodash'),
+                autoComplete(['moment', 'axios']),
+            ],
         }),
     ],
 })

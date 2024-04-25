@@ -3,9 +3,11 @@ import externalGlobals from 'rollup-plugin-external-globals'
 import { viteExternalsPlugin } from 'vite-plugin-externals'
 import fs from 'fs'
 import path from 'path'
-import { Plugin, UserConfig } from 'vite'
+import type { HtmlTagDescriptor, Plugin, UserConfig } from 'vite'
 import { Module, Options } from './type'
 import autoComplete from './autoComplete'
+
+const isDev = process.env.NODE_ENV === 'development'
 
 /**
  * get npm module version
@@ -54,68 +56,74 @@ function renderUrl(
         .replace(/\{path\}/g, path)
 }
 
+function getModuleInfo(module: Module, prodUrl: string) {
+    let v = module
+    const version = getModuleVersion(v.name)
+    let pathList: string[] = []
+    if (!Array.isArray(v.path)) {
+        pathList.push(v.path)
+    } else {
+        pathList = v.path
+    }
+
+    const data = {
+        ...v,
+        version,
+    }
+
+    pathList = pathList.map(p => {
+        if (!version && !isFullPath(p)) {
+            throw new Error(
+                `modules: ${data.name} package.json file does not exist`,
+            )
+        }
+        return renderUrl(prodUrl, {
+            ...data,
+            path: p,
+        })
+    })
+
+    let css = v.css || []
+    if (!Array.isArray(css) && css) {
+        css = [css]
+    }
+
+    const cssList = !Array.isArray(css)
+        ? []
+        : css.map(c =>
+              renderUrl(prodUrl, {
+                  ...data,
+                  path: c,
+              }),
+          )
+
+    return {
+        ...v,
+        version,
+        pathList,
+        cssList,
+    }
+}
+
 function PluginImportToCDN(options: Options): Plugin[] {
     const {
         modules = [],
         prodUrl = 'https://cdn.jsdelivr.net/npm/{name}@{version}/{path}',
         enableInDevMode = false,
+        generateCssLinkTag,
+        generateScriptTag,
     } = options
 
     let isBuild = false
 
-    const data = modules.map(m => {
-        let v: Module
-        if (typeof m === 'function') {
-            v = m(prodUrl)
-        } else {
-            v = m
-        }
-        const version = getModuleVersion(v.name)
-        let pathList: string[] = []
-        if (!Array.isArray(v.path)) {
-            pathList.push(v.path)
-        } else {
-            pathList = v.path
-        }
-
-        const data = {
-            ...v,
-            version,
-        }
-
-        pathList = pathList.map(p => {
-            if (!version && !isFullPath(p)) {
-                throw new Error(
-                    `modules: ${data.name} package.json file does not exist`,
-                )
-            }
-            return renderUrl(prodUrl, {
-                ...data,
-                path: p,
-            })
+    const data = modules
+        .map(m => {
+            const list = (Array.isArray(m) ? m : [m]).map(v =>
+                typeof v === 'function' ? v(prodUrl) : v,
+            )
+            return list.map(v => getModuleInfo(v, prodUrl))
         })
-
-        let css = v.css || []
-        if (!Array.isArray(css) && css) {
-            css = [css]
-        }
-
-        const cssList = !Array.isArray(css)
-            ? []
-            : css.map(c =>
-                  renderUrl(prodUrl, {
-                      ...data,
-                      path: c,
-                  }),
-              )
-
-        return {
-            ...v,
-            version,
-            pathList,
-            cssList,
-        }
-    })
+        .flat()
 
     const externalMap: {
         [name: string]: string
@@ -138,7 +146,6 @@ function PluginImportToCDN(options: Options): Plugin[] {
                 isBuild = command === 'build'
 
                 let userConfig: UserConfig = {
-                    plugins: [],
                     build: {
                         rollupOptions: {
                             plugins: [],
@@ -150,12 +157,6 @@ function PluginImportToCDN(options: Options): Plugin[] {
                     userConfig.build!.rollupOptions!.plugins = [
                         externalGlobals(externalMap),
                     ]
-                } else if (enableInDevMode) {
-                    userConfig.plugins = [
-                        viteExternalsPlugin(externalMap, {
-                            enforce: 'pre',
-                        }),
-                    ]
                 }
 
                 return userConfig
@@ -165,30 +166,56 @@ function PluginImportToCDN(options: Options): Plugin[] {
                     return html
                 }
 
-                const cssCode = data
-                    .map(v =>
-                        v.cssList
-                            .map(css => `<link href="${css}" rel="stylesheet">`)
-                            .join('\n'),
-                    )
-                    .filter(v => v)
-                    .join('\n')
+                const descriptors: HtmlTagDescriptor[] = []
 
-                const jsCode = data
-                    .map(p =>
-                        p.pathList
-                            .map(url => `<script src="${url}"></script>`)
-                            .join('\n'),
-                    )
-                    .join('\n')
+                type CustomHtmlTagDescriptor = Omit<
+                    HtmlTagDescriptor,
+                    'tag' | 'children'
+                >
 
-                return html.replace(
-                    /<\/title>/i,
-                    `</title>${cssCode}\n${jsCode}`,
-                )
+                data.forEach(v => {
+                    v.pathList.forEach(url => {
+                        const cusomize = generateScriptTag?.(v.name, url) || {}
+                        const attrs = {
+                            src: url,
+                            crossorigin: 'anonymous',
+                            ...cusomize.attrs,
+                        }
+
+                        descriptors.push({
+                            tag: 'script',
+                            ...cusomize,
+                            attrs,
+                        })
+                    })
+                    v.cssList.forEach(url => {
+                        const cusomize = generateCssLinkTag?.(v.name, url) || {}
+                        const attrs = {
+                            href: url,
+                            rel: 'stylesheet',
+                            crossorigin: 'anonymous',
+                            ...cusomize.attrs,
+                        }
+                        descriptors.push({
+                            tag: 'link',
+                            ...cusomize,
+                            attrs,
+                        })
+                    })
+                })
+
+                return descriptors
             },
         },
     ]
+
+    if (isDev && enableInDevMode) {
+        plugins.push(
+            viteExternalsPlugin(externalMap, {
+                enforce: 'pre',
+            }),
+        )
+    }
 
     return plugins
 }

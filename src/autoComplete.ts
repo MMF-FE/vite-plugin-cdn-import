@@ -4,6 +4,10 @@ type AutoModuleConfig = Partial<Module> & {
     jsdeliver: Partial<Module>
 }
 
+const isDev = process.env.NODE_ENV === 'development'
+
+// console.log('>>>>isDev', isDev, process.env.NODE_ENV)
+
 /**
  * module 配置自动完成
  */
@@ -11,64 +15,59 @@ const modulesConfig = {
     react: {
         var: 'React',
         jsdeliver: {
-            path: 'umd/react.production.min.js',
+            path: isDev
+                ? 'umd/react.development.js'
+                : 'umd/react.production.min.js',
         },
     },
     'react-dom': {
         var: 'ReactDOM',
         alias: ['react-dom/client'],
         jsdeliver: {
-            path: 'umd/react-dom.production.min.js',
+            path: isDev
+                ? 'umd/react-dom.development.js'
+                : 'umd/react-dom.production.min.js',
         },
     },
     'react-router-dom': {
         var: 'ReactRouterDOM',
         jsdeliver: {
-            path: 'umd/react-router-dom.min.js',
+            path: 'dist/umd/react-router-dom.production.min.js',
         },
     },
     antd: {
         var: 'antd',
         jsdeliver: {
             path: 'dist/antd.min.js',
-            css: 'dist/antd.min.css',
-        },
-    },
-    ahooks: {
-        var: 'ahooks',
-        jsdeliver: {
-            path: 'dist/ahooks.js',
-        },
-    },
-    '@ant-design/charts': {
-        var: 'charts',
-        jsdeliver: {
-            path: 'dist/charts.min.js',
+            css: 'dist/reset.min.css',
         },
     },
     vue: {
         var: 'Vue',
         jsdeliver: {
-            path: 'dist/vue.global.prod.js',
+            path: isDev
+                ? 'dist/vue.runtime.global.js'
+                : 'dist/vue.runtime.global.prod.js',
+        },
+    },
+    'vue-router': {
+        var: 'VueRouter',
+        jsdeliver: {
+            path: 'dist/vue-router.global.min.js',
+        },
+    },
+    'vue-router@3': {
+        var: 'VueRouter',
+        jsdeliver: {
+            name: 'vue-router',
+            path: 'dist/vue-router.min.js',
         },
     },
     vue2: {
         var: 'Vue',
         jsdeliver: {
             name: 'vue',
-            path: 'dist/vue.runtime.min.js',
-        },
-    },
-    '@vueuse/shared': {
-        var: 'VueUse',
-        jsdeliver: {
-            path: 'index.iife.min.js',
-        },
-    },
-    '@vueuse/core': {
-        var: 'VueUse',
-        jsdeliver: {
-            path: 'index.iife.min.js',
+            path: isDev ? 'dist/vue.runtime.js' : 'dist/vue.runtime.min.js',
         },
     },
     moment: {
@@ -77,28 +76,10 @@ const modulesConfig = {
             path: 'moment.min.js',
         },
     },
-    eventemitter3: {
-        var: 'EventEmitter3',
+    dayjs: {
+        var: 'dayjs',
         jsdeliver: {
-            path: 'umd/eventemitter3.min.js',
-        },
-    },
-    'file-saver': {
-        var: 'window',
-        jsdeliver: {
-            path: 'dist/FileSaver.min.js',
-        },
-    },
-    'browser-md5-file': {
-        var: 'browserMD5File',
-        jsdeliver: {
-            path: 'dist/index.umd.min.js',
-        },
-    },
-    xlsx: {
-        var: 'XLSX',
-        jsdeliver: {
-            path: 'dist/xlsx.full.min.js',
+            path: 'dayjs.min.js',
         },
     },
     axios: {
@@ -111,18 +92,6 @@ const modulesConfig = {
         var: '_',
         jsdeliver: {
             path: 'lodash.min.js',
-        },
-    },
-    'crypto-js': {
-        var: 'crypto-js',
-        jsdeliver: {
-            path: 'crypto-js.min.js',
-        },
-    },
-    localforage: {
-        var: 'localforage',
-        jsdeliver: {
-            path: 'dist/localforage.min.js',
         },
     },
 } satisfies Record<string, AutoModuleConfig>
@@ -141,7 +110,7 @@ function isCdnjs(prodUrl: string) {
     return prodUrl.includes('//cdnjs.cloudflare.com')
 }
 
-export default function autoComplete(name: ModuleName) {
+function genModuleByName(name: ModuleName) {
     const config = modulesConfig[name] as AutoModuleConfig
     if (!config) {
         throw new Error(`The configuration of module ${name} does not exist `)
@@ -153,7 +122,9 @@ export default function autoComplete(name: ModuleName) {
             )
         } else {
             if (!(isJsdeliver(prodUrl) || isUnpkg(prodUrl))) {
-                console.warn('Unknown prodUrl, using the jsdeliver rule')
+                console.warn(
+                    'Unknown CDN, please ensure that this CDN supports jsdelivr rules',
+                )
             }
             return {
                 name,
@@ -164,3 +135,18 @@ export default function autoComplete(name: ModuleName) {
         }
     }
 }
+type GetModuleFunc = (prodUrl: string) => Module
+
+function autoComplete(name: ModuleName): GetModuleFunc
+function autoComplete(name: ModuleName[]): GetModuleFunc[]
+function autoComplete(
+    name: ModuleName | ModuleName[],
+): GetModuleFunc | GetModuleFunc[] {
+    if (Array.isArray(name)) {
+        return name.map(genModuleByName)
+    } else {
+        return genModuleByName(name)
+    }
+}
+
+export default autoComplete

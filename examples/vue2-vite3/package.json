@@ -2,14 +2,15 @@
     "name": "vue2-vite",
     "version": "0.0.0",
     "scripts": {
-        "dev": "vite",
+        "dev": "NODE_ENV=development vite",
         "build": "run-p type-check build-only",
         "preview": "vite preview --port 4173",
         "build-only": "vite build",
         "type-check": "vue-tsc --noEmit"
     },
     "dependencies": {
-        "vue": "^2.7.7"
+        "vue": "^2.7.7",
+        "vue-router": "^3.6.5"
     },
     "devDependencies": {
         "@types/node": "^16.11.45",
