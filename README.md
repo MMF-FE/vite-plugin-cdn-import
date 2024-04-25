@@ -29,7 +29,6 @@ Add it to vite.config.js
 
 ```js
 // vite.config.js
-import reactRefresh from '@vitejs/plugin-react-refresh'
 import importToCDN from 'vite-plugin-cdn-import'
 
 export default {
@@ -56,66 +55,95 @@ export default {
 
 ```js
 // vite.config.js
-import reactRefresh from '@vitejs/plugin-react-refresh'
 import importToCDN, { autoComplete } from 'vite-plugin-cdn-import'
 
 export default {
     plugins: [
         importToCDN({
-            modules: [autoComplete('react'), autoComplete('react-dom')],
+            modules: [autoComplete(['react', 'react-dom'])],
         }),
-        reactRefresh(),
     ],
 }
 ```
 
 ### Autocomplete supported modules
 
-```
-"react" | "react-dom" | "react-router-dom" |
-"antd" | "ahooks" | "@ant-design/charts" |
-"vue" | "vue2" | "@vueuse/shared" |
-"@vueuse/core" | "moment" |
-"eventemitter3" | "file-saver" |
-"browser-md5-file" | "xlsx | "crypto-js" |
-"axios" | "lodash" | "localforage"
-```
-
-### VueUse demo
-
-```js
-import vue from '@vitejs/plugin-vue'
-import importToCDN, { autoComplete } from 'vite-plugin-cdn-import'
-
-export default {
-    plugins: [
-        vue(),
-        importToCDN({
-            modules: [
-                autoComplete('vue'), // vue2 use autoComplete('vue2')
-                autoComplete('@vueuse/shared'),
-                autoComplete('@vueuse/core'),
-            ],
-        }),
-    ],
-}
-```
+- react
+- react-dom
+- react-router-dom
+- antd
+- vue
+- vue2
+- vue-router
+- vue-router@3
+- moment
+- dayjs
+- axios
+- lodash
 
 ## Options
 
-| Name    | Description                                                                                  | Type                                                  | Default                                                |
-| ------- | -------------------------------------------------------------------------------------------- | ----------------------------------------------------- | ------------------------------------------------------ |
-| prodUrl | Overrides the global prodUrl, allowing you to specify the CDN location for a specific module | string                                                | <https://cdn.jsdelivr.net/npm/{name}@{version}/{path}> |
-| modules | Modules config                                                                               | Array`<Module>` / Array`<(prodUrl:string) => Module>` | -                                                      |
+
+### prodUrl
+Global prodUrl attribute, template url that generates CND file path.
+- REF: [prodUrl](https://github.com/shirotech/webpack-cdn-plugin?tab=readme-ov-file#produrlstring--unpkgcomnameversionpath)
+- Type
+```ts
+{
+    prodUrl?: string
+}
+```
+- Default: <https://cdn.jsdelivr.net/npm/{name}@{version}/{path}>
+
+### modules
+external config
+- Type
+```ts
+type GetModuleFunc = (prodUrl: string) => Module
+{
+    modules: (Module | Module[] | GetModuleFunc | GetModuleFunc[])[]
+}
+```
+
+### enableInDevMode
+Enabled in dev mode
+- Type: `boolean`
+- Default：`false`
+
+> vite2, vite3 请确保开发模式 process.env.NODE_ENV === 'development'
+
+### generateScriptTag
+Custom generated script tags
+- Type
+```ts
+generateScriptTag?: (
+    name: string,
+    scriptUrl: string,
+) => Omit<HtmlTagDescriptor, 'tag' | 'children'>
+```
+
+### generateCssLinkTag
+Customize generated css link tags
+
+- Type
+```ts
+generateCssLinkTag?: (
+    name: string,
+    cssUrl: string,
+) => Omit<HtmlTagDescriptor, 'tag' | 'children'>
+```
 
 ### Module
 
-| Name | Description                                                                           | Type              |
-| ---- | ------------------------------------------------------------------------------------- | ----------------- |
-| name | The name of the module you want to externalize                                        | string            |
-| var  | A variable that will be assigned to the module in global scope, Rollup requires this  | string            |
-| path | Specify the load path on the CDN                                                      | string / string[] |
-| css  | You can alternatively specify multiple style sheets which will be loaded from the CDN | string / string[] |
+| Name | Description                                   | Type              |
+| ---- | --------------------------------------------- | ----------------- |
+| name | package name                        | string            |
+| alias | Alias ​​of name, for example "react-dom/client" is an alias of "react-dom"   | string[]      |
+| var  | Variables assigned globally to the module| string            |
+| path | Specify the load path on the CDN                         | string / string[] |
+| css  | Multiple style sheets can be loaded from CDN addresses         | string / string[] |
+| prodUrl  | Override global prodUrl   | string / string[] |
+
 
 ## Other CDN pordUrl
 
@@ -126,5 +154,6 @@ export default {
 
 ## Ressources
 
--   [webpack-cdn-plugin](https://github.com/shirotech/webpack-cdn-plugin)
--   [rollup-plugin-external-globals](https://github.com/eight04/rollup-plugin-external-globals)
+- [webpack-cdn-plugin](https://github.com/shirotech/webpack-cdn-plugin)
+- [rollup-plugin-external-globals](https://github.com/eight04/rollup-plugin-external-globals)
+- [vite-plugin-externals](https://github.com/crcong/vite-plugin-externals)

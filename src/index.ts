@@ -57,6 +57,7 @@ function renderUrl(
 }
 
 function getModuleInfo(module: Module, prodUrl: string) {
+    prodUrl = module.prodUrl || prodUrl
     let v = module
     const version = getModuleVersion(v.name)
     let pathList: string[] = []

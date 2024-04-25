@@ -27,7 +27,6 @@ yarn add vite-plugin-cdn-import -D
 
 ```js
 // vite.config.js
-import reactRefresh from '@vitejs/plugin-react-refresh'
 import importToCDN from 'vite-plugin-cdn-import'
 
 export default {
@@ -54,66 +53,93 @@ export default {
 
 ```js
 // vite.config.js
-import reactRefresh from '@vitejs/plugin-react-refresh'
 import importToCDN, { autoComplete } from 'vite-plugin-cdn-import'
 
 export default {
     plugins: [
         importToCDN({
-            modules: [autoComplete('react'), autoComplete('react-dom')],
+            modules: [autoComplete(['react', 'react-dom'])],
         }),
-        reactRefresh(),
     ],
 }
 ```
 
 ### 自动完成支持的 module
 
-```
-"react" | "react-dom" | "react-router-dom" |
-"antd" | "ahooks" | "@ant-design/charts" |
-"vue" | "vue2" | "@vueuse/shared" |
-"@vueuse/core" | "moment" |
-"eventemitter3" | "file-saver" |
-"browser-md5-file" | "xlsx | "crypto-js" |
-"axios" | "lodash" | "localforage"
-```
+- react
+- react-dom
+- react-router-dom
+- antd
+- vue
+- vue2
+- vue-router
+- vue-router@3
+- moment
+- dayjs
+- axios
+- lodash
 
-### VueUse demo
-
-```js
-import vue from '@vitejs/plugin-vue'
-import importToCDN, { autoComplete } from 'vite-plugin-cdn-import'
-
-export default {
-    plugins: [
-        vue(),
-        importToCDN({
-            modules: [
-                autoComplete('vue'), // vue2 使用 autoComplete('vue2')
-                autoComplete('@vueuse/shared'),
-                autoComplete('@vueuse/core'),
-            ],
-        }),
-    ],
-}
-```
 
 ## 参数
 
-| Name    | Description                                            | Type                                                  | Default                                                |
-| ------- | ------------------------------------------------------ | ----------------------------------------------------- | ------------------------------------------------------ |
-| prodUrl | 覆盖全局 prodUrl 属性，允许为特定的模块指定 CDN 的位置 | string                                                | <https://cdn.jsdelivr.net/npm/{name}@{version}/{path}> |
-| modules | 模块配置                                               | Array`<Module>` / Array`<(prodUrl:string) => Module>` | -                                                      |
+### prodUrl
+全局 prodUrl 属性，生成 CND 文件路径的模板 url. 
+- REF: [prodUrl](https://github.com/shirotech/webpack-cdn-plugin?tab=readme-ov-file#produrlstring--unpkgcomnameversionpath)
+- 类型
+```ts
+{
+    prodUrl?: string
+}
+```
+- 默认值: <https://cdn.jsdelivr.net/npm/{name}@{version}/{path}>
+
+### modules
+external 模块配置
+- 类型
+```ts
+type GetModuleFunc = (prodUrl: string) => Module
+{
+    modules: (Module | Module[] | GetModuleFunc | GetModuleFunc[])[]
+}
+```
+
+### enableInDevMode
+是否在开发模式中启用
+- 类型: `boolean`
+- 默认值：`false`
+
+> vite2, vite3 请确保开发模式 process.env.NODE_ENV === 'development'
+
+### generateScriptTag
+自定义生成的 script 标签
+- 类型
+```ts
+generateScriptTag?: (
+    name: string,
+    scriptUrl: string,
+) => Omit<HtmlTagDescriptor, 'tag' | 'children'>
+```
+
+### generateCssLinkTag
+自定义生成 css link 标签
+- 类型
+```ts
+generateCssLinkTag?: (
+    name: string,
+    cssUrl: string,
+) => Omit<HtmlTagDescriptor, 'tag' | 'children'>
+```
 
 ### Module 配置
 
 | Name | Description                                   | Type              |
 | ---- | --------------------------------------------- | ----------------- |
 | name | 需要 CDN 加速的包名称                         | string            |
-| var  | 全局分配给模块的变量，Rollup 需要这个变量名称 | string            |
+| alias | 名称的别名，例如“react-dom/client”是“react-dom”的别名   | string[]      |
+| var  | 全局分配给模块的变量 | string            |
 | path | 指定 CDN 上的加载路径                         | string / string[] |
 | css  | 可以指定从 CDN 地址上加载多个样式表           | string / string[] |
+| prodUrl  | 覆盖全局的 prodUrl   | string / string[] |
 
 ## 其他的 CDN pordUrl 地址
 
@@ -124,5 +150,6 @@ export default {
 
 ## 资源
 
--   [webpack-cdn-plugin](https://github.com/shirotech/webpack-cdn-plugin)
--   [rollup-plugin-external-globals](https://github.com/eight04/rollup-plugin-external-globals)
+- [webpack-cdn-plugin](https://github.com/shirotech/webpack-cdn-plugin)
+- [rollup-plugin-external-globals](https://github.com/eight04/rollup-plugin-external-globals)
+- [vite-plugin-externals](https://github.com/crcong/vite-plugin-externals)

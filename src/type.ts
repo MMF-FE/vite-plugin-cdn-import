@@ -9,6 +9,7 @@ export interface Module {
     /** Alias ​​of name, for example "react-dom/client" is an alias of "react-dom" */
     alias?: string[]
     css?: string | string[]
+    prodUrl?: string
 }
 
 export interface Options {
