@@ -1,6 +1,6 @@
 {
     "name": "vite-plugin-cdn-import",
-    "version": "1.0.0-alpha.5",
+    "version": "1.0.0-alpha.6",
     "description": "Import packages from CDN for the vite plugin",
     "type": "module",
     "main": "dist/index.cjs",
