@@ -17,6 +17,7 @@ jobs:
               with:
                   version: 9
             - run: pnpm install
+            - run: pnpm build
             - run: npm publish --dist-tag alpha
               env:
                   NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
