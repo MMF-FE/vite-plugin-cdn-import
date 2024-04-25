@@ -2,12 +2,19 @@ name: Publish Package to npmjs [stable]
 on:
     push:
         tags: 
-            - 'v\d+.\d+.\d+$'
+            - 'v[0-9]+.[0-9]+.[0-9]+'
 jobs:
     build:
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v4
+            - name: Check branch
+              run: |
+                    BRANCH_NAME=${GITHUB_REF#refs/heads/}
+                    if [[ "$BRANCH_NAME" != "release" ]]; then
+                    echo "Workflow can only run on release branch"
+                    exit 1
+                    fi
             # Setup .npmrc file to publish to npm
             - uses: actions/setup-node@v4
               with:
