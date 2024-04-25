@@ -1,4 +1,4 @@
-name: Publish Package to npmjs [stable]
+name: Publish Package to npmjs
 on:
     push:
         tags: 

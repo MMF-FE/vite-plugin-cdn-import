@@ -1,4 +1,4 @@
-name: Publish Package to npmjs [alpha]
+name: Publish Package to npmjs
 on:
     push:
         tags: 
