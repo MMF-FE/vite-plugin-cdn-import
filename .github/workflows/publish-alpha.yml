@@ -1,8 +1,8 @@
-name: Publish Package to npmjs
+name: Publish Package to npmjs [alpha]
 on:
     push:
         tags: 
-            - 'v*.*.*-alpha.*'
+            - 'v\d+.\d+.\d+-alpha.\d+$'
 jobs:
     build:
         runs-on: ubuntu-latest
