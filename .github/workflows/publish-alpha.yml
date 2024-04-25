@@ -1,8 +1,6 @@
 name: Publish Package to npmjs
 on:
     push:
-        branches:
-            - dev
         tags: 
             - 'v*.*.*-alpha.*'
 jobs:
@@ -10,6 +8,13 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v4
+            - name: Check ref
+              run: |
+                  REF=${{ github.ref }}
+                  if [[ $REF != refs/heads/dev ]]; then
+                      echo "Workflow can only run when push to dev branch and tag matches 'v*.*.*-alpha.*'"
+                      exit 1
+                  fi
             # Setup .npmrc file to publish to npm
             - uses: actions/setup-node@v4
               with:
