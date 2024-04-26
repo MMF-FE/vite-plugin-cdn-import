@@ -1,4 +1,5 @@
 import type { HtmlTagDescriptor } from 'vite'
+import type { ModuleName } from './autoComplete'
 
 export type GetModuleFunc = (prodUrl: string) => Module
 
@@ -14,7 +15,13 @@ export interface Module {
 
 export interface Options {
     prodUrl?: string
-    modules: (Module | Module[] | GetModuleFunc | GetModuleFunc[])[]
+    modules: (
+        | ModuleName
+        | Module
+        | Module[]
+        | GetModuleFunc
+        | GetModuleFunc[]
+    )[]
     /** Enabled in dev mode, default is false */
     enableInDevMode?: boolean
     /** Generate the external script tag */

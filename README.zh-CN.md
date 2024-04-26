@@ -27,11 +27,11 @@ yarn add vite-plugin-cdn-import -D
 
 ```js
 // vite.config.js
-import importToCDN from 'vite-plugin-cdn-import'
+import cdn from 'vite-plugin-cdn-import'
 
 export default {
     plugins: [
-        importToCDN({
+        cdn({
             modules: [
                 {
                     name: 'react',
@@ -49,22 +49,22 @@ export default {
 }
 ```
 
-### 使用 autoComplete
+### 使用预设
 
 ```js
 // vite.config.js
-import importToCDN, { autoComplete } from 'vite-plugin-cdn-import'
+import cdn from 'vite-plugin-cdn-import'
 
 export default {
     plugins: [
-        importToCDN({
-            modules: [autoComplete(['react', 'react-dom'])],
+        cdn({
+            modules: ['react', 'react-dom'],
         }),
     ],
 }
 ```
 
-### 自动完成支持的 module
+### 预设的 npm 包
 
 - react
 - react-dom

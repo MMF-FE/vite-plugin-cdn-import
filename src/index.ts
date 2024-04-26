@@ -5,7 +5,7 @@ import fs from 'fs'
 import path from 'path'
 import type { HtmlTagDescriptor, Plugin, UserConfig } from 'vite'
 import { Module, Options } from './type'
-import autoComplete from './autoComplete'
+import auto from './autoComplete'
 
 const isDev = process.env.NODE_ENV === 'development'
 
@@ -118,7 +118,8 @@ function PluginImportToCDN(options: Options): Plugin[] {
     let isBuild = false
 
     const data = modules
-        .map(m => {
+        .map(_m => {
+            const m = typeof _m === 'string' ? auto(_m) : _m
             const list = (Array.isArray(m) ? m : [m]).map(v =>
                 typeof v === 'function' ? v(prodUrl) : v,
             )
@@ -221,6 +222,10 @@ function PluginImportToCDN(options: Options): Plugin[] {
     return plugins
 }
 
+/**
+ * @deprecated Pass the package name directly in options.modules instead.
+ */
+const autoComplete = auto
 export { PluginImportToCDN as Plugin, Options, autoComplete }
 
 export default PluginImportToCDN

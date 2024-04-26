@@ -29,11 +29,11 @@ Add it to vite.config.js
 
 ```js
 // vite.config.js
-import importToCDN from 'vite-plugin-cdn-import'
+import cdn from 'vite-plugin-cdn-import'
 
 export default {
     plugins: [
-        importToCDN({
+        cdn({
             modules: [
                 {
                     name: 'react',
@@ -51,22 +51,22 @@ export default {
 }
 ```
 
-### Use autoComplete
+### Use preset
 
 ```js
 // vite.config.js
-import importToCDN, { autoComplete } from 'vite-plugin-cdn-import'
+import cdn from 'vite-plugin-cdn-import'
 
 export default {
     plugins: [
-        importToCDN({
-            modules: [autoComplete(['react', 'react-dom'])],
+        cdn({
+            modules: ['react', 'react-dom'],
         }),
     ],
 }
 ```
 
-### Autocomplete supported modules
+### Preset packages
 
 - react
 - react-dom
@@ -110,7 +110,7 @@ Enabled in dev mode
 - Type: `boolean`
 - Default：`false`
 
-> vite2, vite3 请确保开发模式 process.env.NODE_ENV === 'development'
+> Please ensure process.env.NODE_ENV === 'development' when you use vite2, vite3.
 
 ### generateScriptTag
 Custom generated script tags
