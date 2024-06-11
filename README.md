@@ -145,9 +145,9 @@ generateCssLinkTag?: (
 | prodUrl  | Override global prodUrl   | string / string[] |
 
 
-## Other CDN pordUrl
+## Other CDN prodUrl
 
-| Name  | pordUrl                                                  |
+| Name  | prodUrl                                                  |
 | ----- | -------------------------------------------------------- |
 | unpkg | //unpkg.com/{name}@{version}/{path}                      |
 | cdnjs | //cdnjs.cloudflare.com/ajax/libs/{name}/{version}/{path} |
