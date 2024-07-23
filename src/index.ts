@@ -62,7 +62,7 @@ function getModuleInfo(module: Module, prodUrl: string) {
     const version = getModuleVersion(v.name)
     let pathList: string[] = []
     if (!Array.isArray(v.path)) {
-        pathList.push(v.path)
+        v.path && pathList.push(v.path)
     } else {
         pathList = v.path
     }
@@ -131,11 +131,11 @@ function PluginImportToCDN(options: Options): Plugin[] {
         [name: string]: string
     } = {}
 
-    data.forEach(v => {
-        externalMap[v.name] = v.var
+    data.filter(v => v.pathList.length && v.var).forEach(v => {
+        externalMap[v.name] = v.var!
         if (Array.isArray(v.alias)) {
             v.alias.forEach(alias => {
-                externalMap[alias] = v.var
+                externalMap[alias] = v.var!
             })
         }
     })

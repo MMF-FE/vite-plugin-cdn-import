@@ -5,8 +5,8 @@ export type GetModuleFunc = (prodUrl: string) => Module
 
 export interface Module {
     name: string
-    var: string
-    path: string | string[]
+    var?: string
+    path?: string | string[]
     /** Alias ​​of name, for example "react-dom/client" is an alias of "react-dom" */
     alias?: string[]
     css?: string | string[]
